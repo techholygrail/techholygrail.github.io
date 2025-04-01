@@ -359,7 +359,7 @@
             });
         });
         
-        // Form submission with email functionality
+        // Form submission with better user experience
         document.getElementById('supportForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -368,13 +368,39 @@
             const subject = document.getElementById('subject').value;
             const message = document.getElementById('message').value;
             
-            // This is a simple mailto link approach - for production, you would use a server-side solution
-            const mailtoLink = `mailto:aayushib.tech@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message)}`;
+            // Instead of trying to open the email client, show a confirmation with the email address
+            const formDiv = document.querySelector('.contact-form');
+            formDiv.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <h3 style="margin-bottom: 15px; color: #2ecc71;">Thank you for your message!</h3>
+                    <p style="margin-bottom: 20px;">Please send your inquiry to: <strong>aayushib.tech@gmail.com</strong></p>
+                    
+                    <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; text-align: left; margin-bottom: 20px;">
+                        <p><strong>Name:</strong> ${name}</p>
+                        <p><strong>Email:</strong> ${email}</p>
+                        <p><strong>Subject:</strong> ${subject}</p>
+                        <p><strong>Message:</strong><br>${message.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    
+                    <button id="copyButton" class="btn" style="margin-right: 10px;">Copy Message Details</button>
+                    <button id="newMessageButton" class="btn" style="background-color: #3498db;">Send New Message</button>
+                </div>
+            `;
             
-            window.location.href = mailtoLink;
+            // Add copy functionality
+            document.getElementById('copyButton').addEventListener('click', function() {
+                const textToCopy = `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`;
+                navigator.clipboard.writeText(textToCopy).then(function() {
+                    alert('Message details copied to clipboard! You can now paste this into an email to aayushib.tech@gmail.com');
+                }, function() {
+                    alert('Unable to copy to clipboard. Please manually copy the message details.');
+                });
+            });
             
-            alert('Thank you for your message. Your default email client will open so you can send your message to us.');
-            this.reset();
+            // Add new message button functionality
+            document.getElementById('newMessageButton').addEventListener('click', function() {
+                location.reload();
+            });
         });
     </script>
 </body>
